@@ -46,6 +46,20 @@
  *    1.41 Avatar
  *    1.42 Wizard
  */
+
+ /* tambahan sendiri */
+.card,
+.card-body,
+.form-group {
+    overflow: visible !important;
+    position: relative;
+    z-index: 1;
+}
+
+section.section {
+    padding-bottom: 100px;
+}
+
 /* 1.1 Article */
 .article {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.03);

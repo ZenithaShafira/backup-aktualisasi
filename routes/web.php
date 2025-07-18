@@ -2,6 +2,11 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PencarianController;
+use App\Http\Controllers\InputPetaController;
+use App\Http\Controllers\EditPetaController;
+use App\Http\Controllers\InputKegiatanController;
 use App\Http\Controllers\ExampleController;
 
 Route::get('/', function () {
@@ -11,6 +16,15 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/pencarian-peta', [PencarianController::class, 'index'])->name('pencarian-peta');
+    Route::get('/input-peta', [InputPetaController::class, 'index'])->name('input-peta');
+    Route::get('/edit-peta', [EditPetaController::class, 'index'])->name('edit-peta');
+    
+    Route::get('input-kegiatan', [InputKegiatanController::class, 'index'])->name('input-kegiatan');
+    Route::post('input-kegiatan', [InputKegiatanController::class, 'store']);
+
+
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');

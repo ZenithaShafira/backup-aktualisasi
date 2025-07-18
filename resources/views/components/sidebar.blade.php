@@ -8,10 +8,26 @@
         <a href="">STISLA</a>
         </div>
         <ul class="sidebar-menu">
-            <li class="menu-header">Dashboard</li>
-            <li class="{{ Request::is('home') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ url('home') }}"><i class="fas fa-fire"></i><span>Dashboard</span></a>
+            <li class="{{ Request::is('dashboard') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ url('dashboard') }}"><i class="fas fa-home"></i><span>Dashboard</span></a>
             </li>
+
+            <li class="{{ Request::is('pencarian-peta') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ url('pencarian-peta') }}"><i class="fas fa-search"></i><span>Pencarian Peta</span></a>
+            </li>
+
+
+            <li class="menu-header">Basis Data Peta</li>
+            <li class="{{ Request::is('input-peta') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ url('input-peta') }}"><i class="fas fa-folder-plus"></i></i><span>Input Peta</span></a>
+            </li>
+            <li class="{{ Request::is('edit-peta') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ url('edit-peta') }}"><i class="fas fa-pen"></i><span>Edit Peta</span></a>
+            </li>
+            <li class="{{ Request::is('input-kegiatan') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ url('input-kegiatan') }}"><i class="fas fa-list"></i> <span>Input Kegiatan</span></a>
+            </li>
+
             @if (Auth::user()->role == 'superadmin')
             <li class="menu-header">Hak Akses</li>
             <li class="{{ Request::is('hakakses') ? 'active' : '' }}">
@@ -26,6 +42,8 @@
             <li class="{{ Request::is('profile/change-password') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ url('profile/change-password') }}"><i class="fas fa-key"></i> <span>Ganti Password</span></a>
             </li>
+
+
             <li class="menu-header">Starter</li>
             <li class="{{ Request::is('blank-page') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ url('blank-page') }}"><i class="far fa-square"></i> <span>Blank Page</span></a>
