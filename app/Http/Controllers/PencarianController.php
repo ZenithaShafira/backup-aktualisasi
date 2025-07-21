@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\jenis;
 
 class PencarianController extends Controller
 {
@@ -13,6 +14,8 @@ class PencarianController extends Controller
 
     public function index()
     {
-        return view('pencarian');
+        $jenis = jenis::all();
+
+        return view('pencarian', compact('jenis'));
     }
 }
