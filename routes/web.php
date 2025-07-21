@@ -17,7 +17,6 @@ Auth::routes();
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/pencarian-peta', [PencarianController::class, 'index'])->name('pencarian-peta');
     Route::get('/edit-peta', [EditPetaController::class, 'index'])->name('edit-peta');
     
     Route::get('/input-kegiatan', [InputKegiatanController::class, 'index'])->name('input-kegiatan');
@@ -26,6 +25,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/input-peta', [InputPetaController::class, 'index'])->name('input-peta');
     Route::post('/input-peta/preview', [InputPetaController::class, 'showPreview'])->name('input-peta.preview');
     Route::post('/input-peta/store', [InputPetaController::class, 'store'])->name('input-peta.store');
+
+    Route::get('/pencarian-peta', [PencarianController::class, 'index'])->name('pencarian-peta');
+    Route::get('/pencarian-peta/cari', [PencarianController::class, 'searchPeta'])->name('pencarian-peta.cari');
 
 
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

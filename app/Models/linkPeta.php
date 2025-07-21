@@ -17,8 +17,14 @@ class linkPeta extends Model
                             'kode_kel',
                             'kode_bs',
                             'kode_kegiatan',
+                            'tahun_kegiatan',
                             'id_history_folder'
                         ];
 
     public $timestamps = false;
+
+    public function history_folder_peta()
+    {
+        return $this->belongsTo(historyFolderPeta::class, 'id_history_folder', 'id');
+    }
 }

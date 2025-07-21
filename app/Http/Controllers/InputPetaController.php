@@ -143,6 +143,7 @@ class InputPetaController extends Controller
                         'kode_kec' => substr($item['name'], 4, 3),
                         'kode_kel' => substr($item['name'], 7, 3),
                         'kode_bs' => substr($item['name'], 10, 4),
+                        'tahun_kegiatan' => $tahun,
                         'id_history_folder' => $history->id,
                     ]);
                 }
@@ -156,6 +157,7 @@ class InputPetaController extends Controller
                         'bs_lengkap' => substr($item['name'], 0, 10), 
                         'kode_kec' => substr($item['name'], 4, 3),
                         'kode_kel' => substr($item['name'], 7, 3),
+                        'tahun_kegiatan' => $tahun,
                         'id_history_folder' => $history->id,
                     ]);
                 }

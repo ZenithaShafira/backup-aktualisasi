@@ -24,7 +24,7 @@
                                 <h4>Jumlah Peta</h4>
                             </div>
                             <div class="card-body">
-                                10
+                                {{ $totalPeta }}
                             </div>
                         </div>
                     </div>

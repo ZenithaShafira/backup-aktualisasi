@@ -189,7 +189,6 @@
                                             class="form-control @error('folder_url') is-invalid @enderror"
                                             name="folder_url"
                                             value="{{ old('folder_url') }}"
-                                            autofocus
                                             required>
 
                                         @error('folder_url')

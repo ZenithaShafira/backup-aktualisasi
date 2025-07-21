@@ -1,8 +1,8 @@
 <footer class="main-footer">
     <div class="footer-left">
-        &copy; 2024 Vicky Maulana | <a href="https://www.vickymaulana.my.id">My Portofolio</a>
+       BPS Kota Solok &copy; 2025 
     </div>
     <div class="footer-right">
-        1.0.0
+        Zenitha Shafira Arrasya
     </div>
 </footer>
