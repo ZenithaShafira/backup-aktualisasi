@@ -243,6 +243,7 @@
                             <input type="hidden" id="store_bulan" name="store_bulan">
                             <input type="hidden" id="store_jenis" name="store_jenis">
                             <input type="hidden" id="store_versi" name="store_versi">
+                            <input type="hidden" id="store_link" name="store_link">
                             <input type="hidden" id="store_peta" name="store_peta">
                             <div class="text-right mt-5">
                                 <button class="btn btn-primary"

@@ -60,6 +60,26 @@ section.section {
     padding-bottom: 100px;
 }
 
+#editButton:disabled,
+#editButton:disabled:hover,
+#editButton:disabled:focus {
+    background-color: #ccc !important;  
+    border-color: #ccc; 
+    color: #fff !important;
+    cursor: not-allowed;
+    box-shadow: none; 
+}
+
+#submitEditButton:disabled,
+#submitEditButton:disabled:hover,
+#submitEditButton:disabled:focus {
+    background-color: #ccc !important;  
+    border-color: #ccc; 
+    color: #fff !important;
+    cursor: not-allowed;
+    box-shadow: none; 
+}
+
 /* 1.1 Article */
 .article {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.03);

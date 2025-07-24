@@ -49,6 +49,7 @@ $(document).ready(function() {
                     $('#store_bulan').val(resp.bulan_kegiatan);
                     $('#store_jenis').val(resp.jenis_peta);
                     $('#store_versi').val(resp.versi);
+                    $('#store_link').val(resp.link);
                     $('#store_peta').val(JSON.stringify(resp.files));
                 }
                 $('#prevCard').fadeIn();
@@ -67,11 +68,9 @@ $(document).ready(function() {
             let msg = 'Terjadi kesalahan. Coba cek input atau koneksi.';
 
             if (xhr.status === 422 && xhr.responseJSON?.errors) {
-                // Ambil semua pesan error dari response Laravel
                 msg = Object.values(xhr.responseJSON.errors).flat().join('<br>');
             }
 
-            // Tampilkan error dalam card bawahnya (atau kamu bisa pindah ke atas kalau mau)
             $('#prevTabel_wrapper').remove();
             $('#prevTabel').parent().html(`<div class="alert alert-danger">${msg}</div>`);
             $('#prevCard').fadeIn();

@@ -17,7 +17,6 @@ Auth::routes();
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/edit-peta', [EditPetaController::class, 'index'])->name('edit-peta');
     
     Route::get('/input-kegiatan', [InputKegiatanController::class, 'index'])->name('input-kegiatan');
     Route::post('input-kegiatan', [InputKegiatanController::class, 'store']);
@@ -29,6 +28,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/pencarian-peta', [PencarianController::class, 'index'])->name('pencarian-peta');
     Route::get('/pencarian-peta/cari', [PencarianController::class, 'searchPeta'])->name('pencarian-peta.cari');
 
+    Route::get('/edit-peta', [EditPetaController::class, 'index'])->name('edit-peta');
+    Route::get('/edit-peta/get-kegiatan/{jenis_peta}', [EditPetaController::class, 'getKegiatan']);
+    Route::get('/edit-peta/get-bulan/{jenis_peta}/{kode_kegiatan}', [EditPetaController::class, 'getBulan']);
+    Route::get('/edit-peta/get-tahun/{jenis_peta}/{kode_kegiatan}/{bulan_kegiatan}', [EditPetaController::class, 'getTahun']);
+    Route::get('/edit-peta/get-link/{jenis_peta}/{kode_kegiatan}/{bulan_kegiatan}/{tahun_kegiatan}', [EditPetaController::class, 'getLink']);
+    Route::get('/edit-peta/get-prev-baru', [EditPetaController::class, 'getPrevBaru']);
+    Route::post('/edit-peta/submit', [EditPetaController::class, 'submit']);
 
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
