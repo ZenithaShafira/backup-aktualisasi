@@ -5,7 +5,7 @@
         <a href="">SIMPETA</a>
         </div>
         <div class="sidebar-brand sidebar-brand-sm">
-        <a href="">SIMPETA</a>
+        <img src="{{ asset('img/logo.png') }}" alt="Logo" style="width: 50px; height: 50px;">
         </div>
         <ul class="sidebar-menu">
             <li class="{{ Request::is('dashboard') ? 'active' : '' }}">
@@ -16,7 +16,7 @@
                 <a class="nav-link" href="{{ url('pencarian-peta') }}"><i class="fas fa-search"></i><span>Pencarian Peta</span></a>
             </li>
 
-
+            @if (Auth::user()->role == 'superadmin')
             <li class="menu-header">Basis Data Peta</li>
             <li class="{{ Request::is('input-peta') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ url('input-peta') }}"><i class="fas fa-folder-plus"></i></i><span>Input Peta</span></a>
@@ -27,6 +27,7 @@
             <li class="{{ Request::is('input-kegiatan') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ url('input-kegiatan') }}"><i class="fas fa-list"></i> <span>Input Kegiatan</span></a>
             </li>
+            @endif
 
             @if (Auth::user()->role == 'superadmin')
             <!-- <li class="menu-header">Hak Akses</li>

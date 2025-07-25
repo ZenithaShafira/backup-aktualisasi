@@ -195,6 +195,7 @@ class InputPetaController extends Controller
                     ->where(fn($query) =>
                         $query->where('bulan_kegiatan', $request->store_bulan)
                             ->where('tahun_kegiatan', $request->store_tahun)
+                            ->where('jenis_peta', $request->store_jenis)
                     ),
             ],
             'store_tahun' => 'required',

@@ -12,12 +12,12 @@
             <a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
                 <i class="fas fa-user mr-1"></i>
                 <div class="d-sm-none d-lg-inline-block">
-                    Hai, {{ substr(auth()->user()->name, 0, 10) }}
+                    Hai, {{ \Illuminate\Support\Str::before(auth()->user()->name, ' ') }}
                 </div>
             </a>
             <div class="dropdown-menu dropdown-menu-right">
                 <div class="dropdown-title">
-                    Selamat Datang, {{ substr(auth()->user()->name, 0, 10) }}
+                    Selamat Datang, {{ \Illuminate\Support\Str::before(auth()->user()->name, ' ') }}
                 </div>
                 <!-- <a class="dropdown-item has-icon edit-profile" href="{{ route('profile.edit') }}">
                     <i class="fa fa-user"></i> Edit Profile

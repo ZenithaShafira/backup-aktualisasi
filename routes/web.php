@@ -8,10 +8,11 @@ use App\Http\Controllers\InputPetaController;
 use App\Http\Controllers\EditPetaController;
 use App\Http\Controllers\InputKegiatanController;
 use App\Http\Controllers\ExampleController;
+use Illuminate\Support\Facades\Auth;
+
 
 Route::get('/', function () {
     // return view('welcome');
-    // Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     return redirect()->route('dashboard');
 });
 
@@ -22,23 +23,23 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard/kondisi-wb', [DashboardController::class, 'getKondisiWB']);
     Route::get('/dashboard/kondisi-ws', [DashboardController::class, 'getKondisiWS']);
     
-    Route::get('/input-kegiatan', [InputKegiatanController::class, 'index'])->name('input-kegiatan');
-    Route::post('input-kegiatan', [InputKegiatanController::class, 'store']);
+    Route::get('/input-kegiatan', [InputKegiatanController::class, 'index'])->name('input-kegiatan')->middleware('superadmin');
+    Route::post('input-kegiatan', [InputKegiatanController::class, 'store'])->middleware('superadmin');
 
-    Route::get('/input-peta', [InputPetaController::class, 'index'])->name('input-peta');
-    Route::post('/input-peta/preview', [InputPetaController::class, 'showPreview'])->name('input-peta.preview');
-    Route::post('/input-peta/store', [InputPetaController::class, 'store'])->name('input-peta.store');
+    Route::get('/input-peta', [InputPetaController::class, 'index'])->name('input-peta')->middleware('superadmin');
+    Route::post('/input-peta/preview', [InputPetaController::class, 'showPreview'])->name('input-peta.preview')->middleware('supersuperadmin');
+    Route::post('/input-peta/store', [InputPetaController::class, 'store'])->name('input-peta.store')->middleware('superadmin');
 
     Route::get('/pencarian-peta', [PencarianController::class, 'index'])->name('pencarian-peta');
     Route::get('/pencarian-peta/cari', [PencarianController::class, 'searchPeta'])->name('pencarian-peta.cari');
 
-    Route::get('/edit-peta', [EditPetaController::class, 'index'])->name('edit-peta');
-    Route::get('/edit-peta/get-kegiatan/{jenis_peta}', [EditPetaController::class, 'getKegiatan']);
-    Route::get('/edit-peta/get-bulan/{jenis_peta}/{kode_kegiatan}', [EditPetaController::class, 'getBulan']);
-    Route::get('/edit-peta/get-tahun/{jenis_peta}/{kode_kegiatan}/{bulan_kegiatan}', [EditPetaController::class, 'getTahun']);
-    Route::get('/edit-peta/get-link/{jenis_peta}/{kode_kegiatan}/{bulan_kegiatan}/{tahun_kegiatan}', [EditPetaController::class, 'getLink']);
-    Route::get('/edit-peta/get-prev-baru', [EditPetaController::class, 'getPrevBaru']);
-    Route::post('/edit-peta/submit', [EditPetaController::class, 'submit']);
+    Route::get('/edit-peta', [EditPetaController::class, 'index'])->name('edit-peta')->middleware('superadmin');
+    Route::get('/edit-peta/get-kegiatan/{jenis_peta}', [EditPetaController::class, 'getKegiatan'])->middleware('superadmin');
+    Route::get('/edit-peta/get-bulan/{jenis_peta}/{kode_kegiatan}', [EditPetaController::class, 'getBulan'])->middleware('superadmin');
+    Route::get('/edit-peta/get-tahun/{jenis_peta}/{kode_kegiatan}/{bulan_kegiatan}', [EditPetaController::class, 'getTahun'])->middleware('superadmin');
+    Route::get('/edit-peta/get-link/{jenis_peta}/{kode_kegiatan}/{bulan_kegiatan}/{tahun_kegiatan}', [EditPetaController::class, 'getLink'])->middleware('superadmin');
+    Route::get('/edit-peta/get-prev-baru', [EditPetaController::class, 'getPrevBaru'])->middleware('superadmin');
+    Route::post('/edit-peta/submit', [EditPetaController::class, 'submit'])->middleware('superadmin');
 
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
