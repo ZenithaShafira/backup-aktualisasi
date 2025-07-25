@@ -10,13 +10,17 @@ use App\Http\Controllers\InputKegiatanController;
 use App\Http\Controllers\ExampleController;
 
 Route::get('/', function () {
-    return view('welcome');
+    // return view('welcome');
+    // Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    return redirect()->route('dashboard');
 });
 
 Auth::routes();
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard/kondisi-wb', [DashboardController::class, 'getKondisiWB']);
+    Route::get('/dashboard/kondisi-ws', [DashboardController::class, 'getKondisiWS']);
     
     Route::get('/input-kegiatan', [InputKegiatanController::class, 'index'])->name('input-kegiatan');
     Route::post('input-kegiatan', [InputKegiatanController::class, 'store']);

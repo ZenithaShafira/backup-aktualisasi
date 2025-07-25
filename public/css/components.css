@@ -55,10 +55,10 @@
     position: relative;
     z-index: 1;
 }
-
+/* 
 section.section {
     padding-bottom: 100px;
-}
+} */
 
 #editButton:disabled,
 #editButton:disabled:hover,
@@ -73,6 +73,16 @@ section.section {
 #submitEditButton:disabled,
 #submitEditButton:disabled:hover,
 #submitEditButton:disabled:focus {
+    background-color: #ccc !important;  
+    border-color: #ccc; 
+    color: #fff !important;
+    cursor: not-allowed;
+    box-shadow: none; 
+}
+
+#tombolSearch:disabled,
+#tombolSearch:disabled:hover,
+#tombolSearch:disabled:focus {
     background-color: #ccc !important;  
     border-color: #ccc; 
     color: #fff !important;

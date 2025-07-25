@@ -14,35 +14,42 @@ $(document).ready(function() {
         }
     });
     
-    $('#prevPeta').on('submit', function(e){
+    $('#prevPeta').on('submit', function(e) {
         e.preventDefault();
         const $form = $(this);
-        const url   = $form.attr('action');
-        const data  = $form.serialize();
+        const url = $form.attr('action');
+        const data = $form.serialize();
 
-        // reset dan hide sebelum request
-        $('#prevTabel').DataTable?.().clear().destroy(); 
+        $('#prevTabel').DataTable().clear().destroy();
         $('#prevCard').hide();
+        $('#loadingText').show();
 
         $.post(url, data)
             .done(function(resp) {
-                if (!resp.files.length) {
-                    $('#prevTabel_wrapper').remove(); 
-                    $('#prevTabel').parent().html('<p>Folder kosong atau link salah.</p>');
+                // console.log(resp); 
+                $('#loadingText').hide();
+                $('#statusText').empty();
+                $('#statusText').hide();
+                if (!resp.files || !resp.files.length) {
+                    $('#prevTabel_wrapper').remove();
+                    $('#statusText').html(`<div class="alert alert-danger">Folder kosong atau link salah.</div>`);
                 } else {
+                    $('#prevCard').fadeIn();
+                    $('#prevTabel').show();
                     $('#prevTabel').DataTable({
-                    destroy: true,     
-                    data: resp.files,    
-                    columns: [
-                        { data: 'name', title: 'Nama File' },
-                        { data: 'link', title: 'Link',
-                            render: link => `<a href="${link}" target="_blank">View</a>`
-                        }
-                    ],
-                    lengthMenu: [[10,25,50,100,-1],[10,25,50,100,'All']],
-                    dom:'Bflrtip',
-                    responsive: true
+                        destroy: true,
+                        data: resp.files,
+                        columns: [
+                            { data: 'name', title: 'Nama File' },
+                            { data: 'link', title: 'Link',
+                                render: link => link ? `<a href="${link}" target="_blank" class="btn btn-sm btn-primary">View</a>` : 'No Link'
+                            }
+                        ],
+                        lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'All']],
+                        dom: 'Bflrtip',
+                        responsive: true
                     });
+                    $('#simpanPeta').show();
 
                     $('#store_kegiatan_id').val(resp.kegiatan_id);
                     $('#store_tahun').val(resp.tahun_kegiatan);
@@ -52,32 +59,24 @@ $(document).ready(function() {
                     $('#store_link').val(resp.link);
                     $('#store_peta').val(JSON.stringify(resp.files));
                 }
-                $('#prevCard').fadeIn();
             })
-        //     .fail(function(xhr) {
-        //         let msg = 'Terjadi kesalahan. Coba cek input atau koneksi.';
-        //         if (xhr.responseJSON && xhr.responseJSON.errors) {
-        //             msg = Object.values(xhr.responseJSON.errors).flat().join('<br>');
-        //         }
-        //         $('#prevTabel_wrapper').remove();
-        //         $('#prevTabel').parent().html(`<div class="alert alert-danger">${msg}</div>`);
-        //         $('#prevCard').fadeIn();
-        //     }
-        // );
-        .fail(function(xhr) {
-            let msg = 'Terjadi kesalahan. Coba cek input atau koneksi.';
+            .fail(function(xhr) {
+                let msg = 'Terjadi kesalahan. Coba cek input atau koneksi.';
+                if (xhr.status === 422 && xhr.responseJSON?.errors) {
+                    msg = Object.values(xhr.responseJSON.errors).flat().join('<br>');
+                }
 
-            if (xhr.status === 422 && xhr.responseJSON?.errors) {
-                msg = Object.values(xhr.responseJSON.errors).flat().join('<br>');
-            }
-
-            $('#prevTabel_wrapper').remove();
-            $('#prevTabel').parent().html(`<div class="alert alert-danger">${msg}</div>`);
-            $('#prevCard').fadeIn();
-            $('#simpanPeta').hide();
-        });
+                $('#loadingText').hide();
+                $('#statusText').html(`<div class="alert alert-danger">${msg}</div>`);
+                $('#prevTabel').hide();
+                // $('#prevTabel').parent().html(`<div class="alert alert-danger">${msg}</div>`);
+                $('#prevCard').fadeIn();
+                $('#simpanPeta').hide();
+            });
     });
-     
+
+
+    
     $('#storePeta').submit(function(event) {
         event.preventDefault();
     

@@ -32,6 +32,16 @@
                                 </div>
                             </div>
                         @endif
+                        @if(session()->has('error'))
+                            <div class="alert alert-danger alert-dismissible show fade">
+                                <div class="alert-body">
+                                    <button class="close" data-dismiss="alert">
+                                        <span>&times;</span>
+                                    </button>
+                                    {{ session('error') }}
+                                </div>
+                            </div>
+                        @endif
 
                         <form id="editPeta" method="POST" action="/edit-peta/submit">
                             @csrf
@@ -167,31 +177,7 @@
             </div>
         </div>
 
-        <!-- <div class="row" id="prevLamaCard">
-            <div class="col-lg-12 col-md-12 col-12 col-sm-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h4>Preview Link File Peta (Lama)</h4>
-                    </div>
-                    
-                    <div class="card-body" id="prevLamaBody">
-                        <div class="table-responsive">
-                            <table class="table-striped table" id="prevLamaTabel" style="width: 100%;">
-                                <thead>
-                                    <tr>
-                                        <th>Nama File</th>
-                                        <th>Link</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-
-                                </tbody>                      
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div> -->
+        <div id="loadingText" class="mt-2" style="display: none; justify-content: center;">Sedang Memuat....</div>
 
         <div class="row" id="prevBaruCard">
             <div class="col-lg-12 col-md-12 col-12 col-sm-12">

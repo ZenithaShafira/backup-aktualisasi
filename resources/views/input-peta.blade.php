@@ -21,6 +21,17 @@
                     </div>
                     
                     <div class="card-body">
+                        @error('store_kegiatan_id')
+                            <div class="alert alert-danger alert-dismissible show fade">
+                                <div class="alert-body">
+                                    <button class="close"
+                                        data-dismiss="alert">
+                                            <span>&times;</span>
+                                    </button>
+                                    {{ $message }}
+                                </div>
+                            </div>
+                        @enderror
                         @if(session()->has('success'))
                             <div class="alert alert-success alert-dismissible show fade">
                                 <div class="alert-body">
@@ -29,6 +40,16 @@
                                             <span>&times;</span>
                                     </button>
                                     {{ session('success') }}
+                                </div>
+                            </div>
+                        @endif
+                        @if(session()->has('error'))
+                            <div class="alert alert-danger alert-dismissible show fade">
+                                <div class="alert-body">
+                                    <button class="close" data-dismiss="alert">
+                                        <span>&times;</span>
+                                    </button>
+                                    {{ session('error') }}
                                 </div>
                             </div>
                         @endif
@@ -114,7 +135,7 @@
                                             name="tahun_kegiatan"
                                             class="form-control @error('tahun_kegiatan') is-invalid @enderror"
                                             required>
-                                            <option value="" disabled {{ old('tahun_kegiatan') ? '' : 'selected' }}>-- Pilih Tahun --</option>
+                                            <option value="" disabled {{ old('tahun_kegiatan') ? '' : 'selected' }}>Pilih Tahun</option>
                                             @for($year = $endYear; $year >= $startYear; $year--)
                                                 <option value="{{ $year }}" {{ old('tahun_kegiatan') == $year ? 'selected' : '' }}>
                                                     {{ $year }}
@@ -138,7 +159,7 @@
                                             name="jenis_peta"
                                             class="form-control @error('jenis_peta') is-invalid @enderror"
                                             required>
-                                            <option value="" disabled {{ old('jenis_peta') ? '' : 'selected' }}>Pilih Jenis Peta</option>
+                                            <option value="" disabled {{ old('jenis_peta') ? '' : 'selected' }}>Pilih Jenis</option>
                                             @foreach($jenis as $item)
                                                 <option value="{{ $item->jenis_peta }}" {{ old('jenis_peta') == $item->jenis_peta ? 'selected' : '' }}>
                                                     {{ $item->jenis_peta }}
@@ -213,6 +234,8 @@
             </div>
         </div>
 
+        <div id="loadingText" class="mt-2" style="display: none; justify-content: center;">Sedang Memuat....</div>
+
         <!-- row 2  -->
         <div class="row" id="prevCard" style="display:none;">
             <div class="col-lg-12 col-md-12 col-12 col-sm-12">
@@ -222,6 +245,7 @@
                     </div>
                     
                     <div class="card-body" id="prevBody">
+                        <div id="statusText" class="mt-2"></div>
                         <div class="table-responsive">
                             <table class="table-striped table" id="prevTabel" style="width: 100%;">
                                 <thead>

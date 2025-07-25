@@ -22,11 +22,17 @@ $(document).ready(function() {
 
         const $container = $('#hasilContainer');
         $container.empty(); 
+        $('#loadingText').show();
+        $('#errorContainer').hide();
 
         $.get(url, data)
             .done(function(resp) {
+                $('#loadingText').hide();
                 if (!resp || Object.keys(resp).length === 0) {
-                    $container.html('<div class="alert alert-warning">Peta tidak ditemukan.</div>');
+                    // $container.html('<div class="alert alert-danger">Peta tidak ditemukan.</div>');
+                    // $('#status').html('Peta tidak ditemukan').show();
+                    $('#statusText').html(`<div class="alert alert-warning">Peta tidak ditemukan.</div>`);
+                    $('#errorContainer').show();
                     return;
                 }
 
@@ -34,6 +40,38 @@ $(document).ready(function() {
                 $.each(resp, function(groupKey, rows) {
                     index++;
                     const tableId = `hasilSearch_${index}`;
+                    const jenisPeta = $('#jenis_peta').val();
+
+                    let theadHtml = `
+                            <tr>
+                                <th>Nama Kecamatan</th>
+                                <th>Nama Kelurahan</th>`;
+                                if (jenisPeta === 'WS') {
+                                    theadHtml += `<th>Nama SLS</th>`;
+                                }
+                                theadHtml += `
+                                <th>Nama File</th>
+                                <th>Link</th>
+                            </tr>`;
+
+                    let columns = [
+                        { data: 'nama_kec', title: 'Nama Kecamatan' },
+                        { data: 'nama_kel', title: 'Nama Kelurahan' },
+                        { data: 'nama_file', title: 'Nama File' },
+                        {
+                            data: 'link_file',
+                            title: 'Peta',
+                            render: function(data) {
+                                return `<a href="${data}" target="_blank" class="btn btn-sm btn-primary">View</a>`;
+                            }
+                        }
+                    ];
+
+                    if (jenisPeta === 'WS') {
+                        columns.splice(2, 0, { data: 'nama_sls', title: 'Nama SLS' });
+                    }
+
+                    let orderIndex = (jenisPeta === 'WS') ? 3 : 2;
 
                     const cardHtml = `
                         <div class="col-12">
@@ -45,12 +83,7 @@ $(document).ready(function() {
                                     <div class="table-responsive">
                                         <table class="table table-striped w-100" id="${tableId}">
                                             <thead>
-                                                <tr>
-                                                    <th>Nama Kecamatan</th>
-                                                    <th>Nama Kelurahan</th>
-                                                    <th>Nama File</th>
-                                                    <th>Link</th>
-                                                </tr>
+                                                <tr>${theadHtml}</tr>
                                             </thead>
                                             <tbody></tbody>
                                         </table>
@@ -64,21 +97,23 @@ $(document).ready(function() {
 
                     $(`#${tableId}`).DataTable({
                         data: rows,
-                        columns: [
-                            { data: 'nama_kec', title: 'Nama Kecamatan' },
-                            { data: 'nama_kel', title: 'Nama Kelurahan' },
-                            { data: 'nama_file', title: 'Nama File' },
-                            {
-                                data: 'link_file',
-                                title: 'Peta',
-                                render: function(data) {
-                                    return `<a href="${data}" target="_blank" class="btn btn-sm btn-primary">View</a>`;
-                                }
-                            }
-                        ],
+                        columns: columns,
+                        // columns: [
+                        //     { data: 'nama_kec', title: 'Nama Kecamatan' },
+                        //     { data: 'nama_kel', title: 'Nama Kelurahan' },
+                        //     { data: 'nama_file', title: 'Nama File' },
+                        //     {
+                        //         data: 'link_file',
+                        //         title: 'Peta',
+                        //         render: function(data) {
+                        //             return `<a href="${data}" target="_blank" class="btn btn-sm btn-primary">View</a>`;
+                        //         }
+                        //     }
+                        // ],
                         responsive: true,
                         destroy: true,
                         lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "Semua"]],
+                        order: [[orderIndex, 'asc']],
                         dom: 'Bflrtip'
                     });
                 });
@@ -88,7 +123,9 @@ $(document).ready(function() {
                 if (xhr.status === 422 && xhr.responseJSON?.errors) {
                     msg = Object.values(xhr.responseJSON.errors).flat().join('<br>');
                 }
-                $('#hasilContainer').html(`<div class="alert alert-danger">${msg}</div>`);
+                // $('#hasilContainer').html(`<div class="alert alert-danger">${msg}</div>`);
+                $('#statusText').html(`<div class="alert alert-danger">${msg}</div>`);
+                $('#errorContainer').show();
             });
     });
 

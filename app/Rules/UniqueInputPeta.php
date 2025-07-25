@@ -9,10 +9,12 @@ use Illuminate\Support\Facades\DB;
 class UniqueInputPeta implements ValidationRule
 {
     protected $tahunKegiatan;
+    protected $bulanKegiatan;
 
-    public function __construct($tahunKegiatan)
+    public function __construct($tahunKegiatan, $bulanKegiatan)
     {
         $this->tahunKegiatan = $tahunKegiatan;
+        $this->bulanKegiatan = $bulanKegiatan;
     }
 
     /**
@@ -24,11 +26,12 @@ class UniqueInputPeta implements ValidationRule
     {
         $exists = DB::table('history_folder_peta')
             ->where('id_kegiatan', $value)
+            ->where('bulan_kegiatan', $this->bulanKegiatan)
             ->where('tahun_kegiatan', $this->tahunKegiatan)
             ->exists();
 
         if ($exists) {
-            $fail('Kegiatan dan tahun ini sudah pernah terdaftar di history folder.');
+            $fail('Kegiatan, bulan, dan tahun ini sudah pernah terdaftar di history folder.');
         }
     }
 }

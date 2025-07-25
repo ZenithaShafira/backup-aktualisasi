@@ -35,7 +35,11 @@ class InputPetaController extends Controller
             'kegiatan_id' => [
                 'required',
                 Rule::exists('kegiatan', 'kode_kegiatan'),
-                new UniqueInputPeta($request->tahun_kegiatan),
+                // Rule::unique('history_folder_peta', 'id_kegiatan')
+                // ->where(fn($query) =>
+                //     $query->where('bulan_kegiatan', $request->bulan_kegiatan)
+                //           ->where('tahun_kegiatan', $request->tahun_kegiatan)
+                // ),
             ],
             'tahun_kegiatan' => 'required',
             'jenis_peta' => [
@@ -182,62 +186,103 @@ class InputPetaController extends Controller
     // }
 
     public function store(Request $request)
-{
-    $request->validate([
-        'store_peta'           => 'required|json',
-        'store_kegiatan_id'    => 'required',
-        'store_tahun'          => 'required',
-        'store_bulan'          => 'required',
-        'store_jenis'          => 'required',
-        'store_versi'          => 'nullable',
-        'store_link'           => 'required',
-    ]);
+    {
+        $request->validate([
+            'store_peta' => 'required|json',
+            'store_kegiatan_id' => [
+                'required',
+                Rule::unique('history_folder_peta', 'id_kegiatan')
+                    ->where(fn($query) =>
+                        $query->where('bulan_kegiatan', $request->store_bulan)
+                            ->where('tahun_kegiatan', $request->store_tahun)
+                    ),
+            ],
+            'store_tahun' => 'required',
+            'store_bulan' => 'required',
+            'store_jenis' => 'required',
+            'store_versi' => 'nullable',
+            'store_link'  => 'required',
+        ], [
+            'store_kegiatan_id.unique' => 'Kegiatan dengan bulan dan tahun tersebut sudah pernah diinput',
+        ]);
 
-    $kode_kegiatan = $request->input('store_kegiatan_id');
-    $tahun  = $request->input('store_tahun');
-    $bulan  = $request->input('store_bulan');
-    $jenis  = $request->input('store_jenis');
-    $versi  = $request->input('store_versi');
-    $link   = $request->input('store_link');
-    $tabelPeta = json_decode($request->input('store_peta'), true);
+        $kode_kegiatan = $request->input('store_kegiatan_id');
+        $tahun  = $request->input('store_tahun');
+        $bulan  = $request->input('store_bulan');
+        $jenis  = $request->input('store_jenis');
+        $versi  = $request->input('store_versi');
+        $link   = $request->input('store_link');
+        $tabelPeta = json_decode($request->input('store_peta'), true);
 
-    try {
-        DB::transaction(function () use ($kode_kegiatan, $tahun, $bulan, $jenis, $versi, $link, $tabelPeta) {
+        try {
+            DB::transaction(function () use ($kode_kegiatan, $tahun, $bulan, $jenis, $versi, $link, $tabelPeta) {
 
-            $history = historyFolderPeta::create([
-                'id_kegiatan'    => $kode_kegiatan,
-                'bulan_kegiatan' => $bulan,
-                'tahun_kegiatan' => $tahun, 
-                'jenis_peta'     => $jenis,
-                'versi_bs'       => $versi,
-                'link_folder'    => $link
-            ]);
-
-            foreach ($tabelPeta as $item) {
-                // misal validasi manual
-                if (empty($item['name']) || empty($item['link'])) {
-                    throw new \Exception('Nama file atau link kosong');
-                }
-
-                linkPeta::create([
-                    'kode_jenis'        => $jenis,
-                    'kode_kegiatan'     => $kode_kegiatan,
-                    'nama_file'         => $item['name'],
-                    'link_file'         => $item['link'],
-                    'bs_lengkap'        => ($jenis == "WB") ? substr($item['name'], 0, 13) : substr($item['name'], 0, 10),
-                    'kode_kec'          => substr($item['name'], 4, 3),
-                    'kode_kel'          => substr($item['name'], 7, 3),
-                    'kode_bs'           => ($jenis == "WB") ? substr($item['name'], 10, 4) : null,
-                    'tahun_kegiatan'    => $tahun,
-                    'id_history_folder' => $history->id,
+                $history = historyFolderPeta::create([
+                    'id_kegiatan'    => $kode_kegiatan,
+                    'bulan_kegiatan' => $bulan,
+                    'tahun_kegiatan' => $tahun, 
+                    'jenis_peta'     => $jenis,
+                    'versi_bs'       => $versi,
+                    'link_folder'    => $link
                 ]);
-            }
-        });
 
-        return redirect('/edit-peta')->with('success', 'Simpan peta berhasil');
+                foreach ($tabelPeta as $item) {
+                    // misal validasi manual
+                    if (empty($item['name']) || empty($item['link'])) {
+                        throw new \Exception('Nama file atau link kosong');
+                    }
 
-    } catch (\Exception $e) {
-        return redirect('/edit-peta')->with('error', 'Gagal simpan peta: ' . $e->getMessage());
+                    $kodeKec = substr($item['name'], 4, 3);
+                    $kodeKel = substr($item['name'], 7, 3);
+                    $kodeSls = substr($item['name'], 10, 4);
+                    $kodeBs  = substr($item['name'], 10, 4);
+
+                    $kecExists = DB::table('kecamatan')->where('kode_kec', $kodeKec)->exists();
+                    if (!$kecExists) {
+                        throw new \Exception("Kode kecamatan {$kodeKec} tidak terdaftar");
+                    }
+
+                    $kelExists = DB::table('kelurahan')->where('kode_kel', $kodeKel)->exists();
+                    if (!$kelExists) {
+                        throw new \Exception("Kode kelurahan {$kodeKel} tidak terdaftar");
+                    }
+
+                    if ($jenis == "WS") {
+                        if (!preg_match('/^[0-9]{4}$/', $kodeSls)) {
+                            throw new \Exception("Kode SLS {$kodeSls} tidak valid formatnya");
+                        }
+                        if (!DB::table('sls')->where('kode_sls', $kodeSls)->exists()) {
+                            throw new \Exception("Kode SLS {$kodeSls} tidak terdaftar di tabel SLS");
+                        }
+                    }
+                    if ($jenis == "WB") {
+                        if (!preg_match('/^[0-9]{3}[A-Z]$/', $kodeBs)) {
+                            throw new \Exception("Kode BS {$kodeBs} tidak valid formatnya");
+                        }
+                        if (!DB::table('blok_sensus')->where('kode_bs', $kodeBs)->exists()) {
+                            throw new \Exception("Kode BS {$kodeBs} tidak terdaftar di tabel blok_sensus");
+                        }
+                    }
+
+                    linkPeta::create([
+                        'kode_jenis'        => $jenis,
+                        'kode_kegiatan'     => $kode_kegiatan,
+                        'nama_file'         => $item['name'],
+                        'link_file'         => $item['link'],
+                        'kode_kec'          => $kodeKec,
+                        'kode_kel'          => $kodeKel,
+                        'kode_sls'          => ($jenis == "WS") ? $kodeSls : null,
+                        'kode_bs'           => ($jenis == "WB") ? $kodeBs  : null,
+                        'tahun_kegiatan'    => $tahun,
+                        'id_history_folder' => $history->id,
+                    ]);
+                }
+            });
+
+            return redirect('/input-peta')->with('success', 'Simpan peta berhasil');
+
+        } catch (\Exception $e) {
+            return redirect('/input-peta')->with('error', 'Gagal simpan peta: ' . $e->getMessage());
+        }
     }
-}
 }

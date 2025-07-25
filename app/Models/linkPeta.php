@@ -16,6 +16,7 @@ class linkPeta extends Model
                             'kode_kec',
                             'kode_kel',
                             'kode_bs',
+                            'kode_sls',
                             'kode_kegiatan',
                             'tahun_kegiatan',
                             'id_history_folder'

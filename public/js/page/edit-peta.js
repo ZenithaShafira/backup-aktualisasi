@@ -5,6 +5,7 @@ $(document).ready(function () {
     $('#folder_url').prop('disabled', true);
     $("#editButton").prop("disabled", true);
     $("#prevEditButton").prop("disabled", true).hide();
+    $('#prevBaruCard').hide()
 
     function checkButtons() {
         const allEnabled =
@@ -28,6 +29,12 @@ $(document).ready(function () {
 
     $('#jenis_peta').on('change', function() {
         const jenis = $(this).val();
+        $('#kegiatan_id').prop('disabled', true).val();
+        $('#bulan_kegiatan').prop('disabled', true).val('');
+        $('#tahun_kegiatan').prop('disabled', true).val('');
+        $('#folder_url').prop('disabled', true).val('');
+        $('#prevBaruCard').hide();
+        checkButtons();
         // console.log(jenis);
 
         $('#kegiatan_id').html('<option value="" disabled selected>Loading...</option>');
@@ -54,6 +61,12 @@ $(document).ready(function () {
     $('#kegiatan_id').on('change', function() {
         const jenis = $('#jenis_peta').val();
         const kegiatan = $(this).val();
+
+        $('#bulan_kegiatan').prop('disabled', true).val();
+        $('#tahun_kegiatan').prop('disabled', true).val('');
+        $('#folder_url').prop('disabled', true).val('');
+        $('#prevBaruCard').hide();
+        checkButtons();
         // console.log(jenis);
 
         $('#bulan_kegiatan').html('<option value="" disabled selected>Loading...</option>');
@@ -81,6 +94,11 @@ $(document).ready(function () {
         const jenis = $('#jenis_peta').val();
         const kegiatan = $('#kegiatan_id').val();
         const bulan = $(this).val();
+
+        $('#tahun_kegiatan').prop('disabled', true).val();
+        $('#folder_url').prop('disabled', true).val('');
+        $('#prevBaruCard').hide();
+        checkButtons();
         // console.log(jenis);
 
         $('#tahun_kegiatan').html('<option value="" disabled selected>Loading...</option>');
@@ -109,6 +127,9 @@ $(document).ready(function () {
         const kegiatan = $('#kegiatan_id').val();
         const bulan = $('#bulan_kegiatan').val();
         const tahun = $(this).val();
+
+        $('#folder_url').prop('disabled', true).val();
+        $('#prevBaruCard').hide();
 
         $('#folder_url').val('Loading...');
 
@@ -150,29 +171,45 @@ $(document).ready(function () {
         const history = $('#history_id').val();
         const link = $('#folder_url').val();
 
+        $('#prevBaruTabel').DataTable().clear().destroy();
+        $('#prevBaruCard').hide();
+        $('#loadingText').show();
+        
         $.ajax({
             url: '/edit-peta/get-prev-baru',
             type: 'GET',
             data: { link: $('#folder_url').val() },
             success: function (data) {
+                $('#loadingText').hide();
+                $('#statusText').empty();
+                $('#statusText').hide();
                 $('#prevBaruTabel').DataTable({
                     destroy: true,     
                     data: data,    
                     columns: [
                         { data: 'name', title: 'Nama File' },
                         { data: 'link', title: 'Link',
-                            render: link => `<a href="${link}" target="_blank">View</a>`
+                            render: link => `<a href="${link}" target="_blank" class="btn btn-sm btn-primary">View</a>`
                         }
                     ],
                     lengthMenu: [[10,25,50,100,-1],[10,25,50,100,'All']],
                     dom:'Bflrtip',
                     responsive: true
                 });
-
                 $('#hasilPrev').val(JSON.stringify(data));
+                $('#prevBaruCard').show();
             },
             error: function () {
-                $('#folder_url').val("Gagal memuat data");
+                let msg = 'Terjadi kesalahan. Coba cek input atau koneksi.';
+                if (xhr.status === 422 && xhr.responseJSON?.errors) {
+                    msg = Object.values(xhr.responseJSON.errors).flat().join('<br>');
+                }
+
+                $('#loadingText').hide();
+                $('#statusText').html(`<div class="alert alert-danger">${msg}</div>`);
+                $('#prevBaruTabel').hide();
+                $('#prevBaruCard').fadeIn();
+                $('#submitEditPeta').hide();
             }
         });
     });

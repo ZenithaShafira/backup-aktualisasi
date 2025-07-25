@@ -210,28 +210,56 @@ class EditPetaController extends Controller
                         throw new \Exception('Nama file atau link kosong');
                     }
 
+                    $kodeKec = substr($item['name'], 4, 3);
+                    $kodeKel = substr($item['name'], 7, 3);
+                    $kodeSls = substr($item['name'], 10, 4);
+                    $kodeBs  = substr($item['name'], 10, 4);
+
+                    $kecExists = DB::table('kecamatan')->where('kode_kec', $kodeKec)->exists();
+                    if (!$kecExists) {
+                        throw new \Exception("Kode kecamatan {$kodeKec} tidak terdaftar");
+                    }
+
+                    $kelExists = DB::table('kelurahan')->where('kode_kel', $kodeKel)->exists();
+                    if (!$kelExists) {
+                        throw new \Exception("Kode kelurahan {$kodeKel} tidak terdaftar");
+                    }
+
+                    if ($history->jenis_peta == "WS") {
+                        if (!preg_match('/^[0-9]{4}$/', $kodeSls)) {
+                            throw new \Exception("Kode SLS {$kodeSls} tidak valid formatnya");
+                        }
+                        if (!DB::table('sls')->where('kode_sls', $kodeSls)->exists()) {
+                            throw new \Exception("Kode SLS {$kodeSls} tidak terdaftar di tabel SLS");
+                        }
+                    }
+                    if ($history->jenis_peta == "WB") {
+                        if (!preg_match('/^[0-9]{3}[A-Z]$/', $kodeBs)) {
+                            throw new \Exception("Kode BS {$kodeBs} tidak valid formatnya");
+                        }
+                        if (!DB::table('blok_sensus')->where('kode_bs', $kodeBs)->exists()) {
+                            throw new \Exception("Kode BS {$kodeBs} tidak terdaftar di tabel blok_sensus");
+                        }
+                    }
+
                     linkPeta::create([
                         'kode_jenis'        => $history->jenis_peta,
                         'kode_kegiatan'     => $history->id_kegiatan,
                         'nama_file'         => $item['name'],
                         'link_file'         => $item['link'],
-                        'bs_lengkap'        => $history->jenis_peta == "WB"
-                                                ? substr($item['name'], 0, 13)
-                                                : substr($item['name'], 0, 10),
-                        'kode_kec'          => substr($item['name'], 4, 3),
-                        'kode_kel'          => substr($item['name'], 7, 3),
-                        'kode_bs'           => $history->jenis_peta == "WB"
-                                                ? substr($item['name'], 10, 4)
-                                                : null,
+                        'kode_kec'          => $kodeKec,
+                        'kode_kel'          => $kodeKel,
+                        'kode_sls'          => ($history->jenis_peta == "WS") ? $kodeSls : null,
+                        'kode_bs'           => ($history->jenis_peta == "WB") ? $kodeBs  : null,
                         'tahun_kegiatan'    => $history->tahun_kegiatan,
                         'id_history_folder' => $history->id,
                     ]);
                 }
             });
 
-            return redirect('/input-peta')->with('success', 'Edit peta berhasil');
+            return redirect('/edit-peta')->with('success', 'Edit peta berhasil');
         } catch (\Exception $e) {
-            return redirect('/input-peta')->with('error', 'Edit peta gagal: ' . $e->getMessage());
+            return redirect('/edit-peta')->with('error', 'Edit peta gagal: ' . $e->getMessage());
         }
     }
 }

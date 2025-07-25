@@ -24,7 +24,7 @@
                                             name="jenis_peta"
                                             class="form-control @error('jenis_peta') is-invalid @enderror"
                                             required>
-                                            <option value="" disabled {{ old('jenis_peta') ? '' : 'selected' }}>Pilih Jenis Peta</option>
+                                            <option value="" disabled {{ old('jenis_peta') ? '' : 'selected' }}>Pilih Jenis</option>
                                             @foreach($jenis as $item)
                                                 <option value="{{ $item->jenis_peta }}" {{ old('jenis_peta') == $item->jenis_peta ? 'selected' : '' }}>
                                                     {{ $item->jenis_peta }}
@@ -76,14 +76,23 @@
             </div>
         </div>
 
+        <div id="loadingText" class="mt-2" style="display: none; justify-content: center;">Sedang Memuat....</div>
+        <div class="card" style="display: none;" id="errorContainer">
+            <div class="card-header">
+                <h4>Hasil Pencarian</h4>
+            </div>
+            <div class="card-body">
+                <div id="statusText" class="mt-2"></div>
+            </div>
+        </div>
         <div class="row" id="hasilContainer"></div>
+        
     </section>
 @endsection
 
 @push('scripts')
     <!-- jQuery -->
-    <script src="https://code
-    .jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.nicescroll/3.7.6/jquery.nicescroll.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
